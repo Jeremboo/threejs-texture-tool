@@ -1,0 +1,42 @@
+{
+  "name": "CanvasTextureTool",
+  "version": "0.0.1",
+  "description": "Tool to preview and list your canvas texture for three.js",
+  "scripts": {
+    "start": "npm run build && npm run css:dev & npm run js:dev",
+    "js:dev": "budo demo/app.js --live --dir ./demo --open -- -t [babelify --presets [ es2015 stage-0 ] ]",
+    "css:dev": "stylus -w demo/style.styl -u autoprefixer-stylus -o demo/style.css",
+    "build": "npm run css:build & npm run js:build",
+    "js:build": "browserify -t [babelify --presets [ es2015 stage-0 ] ] src/index.js -o dist/canvasTextureTool.js && uglifyjs dist/canvasTextureTool.js -o dist/canvasTextureTool.min.js",
+    "css:build": "stylus -w src/style.styl -u autoprefixer-stylus -c -o dist/canvasTextureTool.css"
+  },
+  "keywords": [
+    "webgl",
+    "canvas",
+    "texture",
+    "tool",
+    "three.js"
+  ],
+  "author": "Jérémie Boulay <jeremi.boulay@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "three-js": "^79.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.3.1",
+    "autoprefixer-stylus": "^0.9.4",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.5.0",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "budo": "^8.2.1",
+    "eslint": "^3.4.0",
+    "eslint-config-airbnb": "^10.0.1",
+    "eslint-plugin-import": "^1.14.0",
+    "eslint-plugin-jsx-a11y": "^2.2.1",
+    "eslint-plugin-react": "^6.4.1",
+    "poststylus": "^0.2.3",
+    "stylus": "^0.54.2",
+    "uglifyjs": "^2.4.10"
+  }
+}
