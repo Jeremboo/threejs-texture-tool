@@ -1,5 +1,5 @@
 {
-  "name": "CanvasTextureTool",
+  "name": "threejs-texture-tool",
   "version": "0.0.1",
   "description": "Tool to preview and list your canvas texture for three.js",
   "scripts": {
