@@ -3,7 +3,7 @@
 A tool who build, show and update canvas textures who can be used in a [three.js](https://threejs.org/) project.
 
 
-![Canvas Texture Tool demo](https://github.com/Jeremboo/canvas-texture-tool/blob/master/demo/canvasTextureTool.gif?raw=true)
+![Canvas Texture Tool demo](https://github.com/Jeremboo/canvas-texture-tool/blob/master/demo/demo.gif?raw=true)
 
 [demo](http://codepen.io/Jeremboo/full/qqabKY/)
 
