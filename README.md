@@ -1,18 +1,20 @@
-# CanvasTextureTool 0.0.1
+# ThreejsTextureTool 0.1.1
 
-A tool who build, show and update canvas textures who can be used in a [three.js](https://threejs.org/) project.
+A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
 
 
-![Canvas Texture Tool demo](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo.gif?raw=true)
+![Threejs Texture Tool demo](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo.gif?raw=true)
 
 [demo](http://codepen.io/Jeremboo/full/qqabKY/)
 
 
 ## Getting Started (es6)
 
+### Init
+
 ```javascript
 import threejs from 'three-js';
-import CanvasTextureTool from '../src';
+import CanvasTextureTool from 'threejs-texture-tool';
 
 const THREE = threejs();
 
@@ -23,8 +25,14 @@ const THREE = threejs();
  */
 const textureTool = new CanvasTextureTool(THREE);
 
+```
+
+### Create canvas Texture
+
+```javascript
+
 /**
- * createCanvasTexture() returns a CanvasTexture object
+ * createCanvasTexture() return a CanvasTexture object
  *
  * @params {String} name = `canvas-${i}`
  * @params {Number} width = 256
@@ -33,7 +41,8 @@ const textureTool = new CanvasTextureTool(THREE);
 const canvasTexture = textureTool.createCanvasTexture();
 
 /**
- * drawCustomCanvas() code to draw into canvas
+ * drawCustomCanvas() code to draw on the canvas.
+ * Possibility to add dynamic actions/
  *
  * @params {Object} props = {}
  * @params {Function} construction method
@@ -45,19 +54,23 @@ canvasTexture.drawCustomCanvas({ color: '#FCCE06'}, (context, params) => {
   context.fill();
 });
 
+```
+
+Possibilities :
+
+```javascript
+
+
 /**
- * update() code to update the canvas in calling
- * le method created with drawCustomCanvas
+ * update() code to update the canvas render built by
+ * drawCustomCanvas().
+ * Can be called by a loop into a requestAnimationFrame()
  *
  * @params {Object} props = {}
  */
-canvasTexture.update();
+canvasTexture.update({ color: '#CB512B'});
 
 ...
-
-// ###############
-// POSSIBILITIES
-// ###############
 
 // Create a mesh using canvas on material
 const mesh = THREE.Mesh(
@@ -77,15 +90,54 @@ const shaderMaterial = new THREE.ShaderMaterial({
 
 // Get only canvas
 const canvas = canvasTexture.canvas;
+
 ```
+
+### Create texture with an image
+
+```javascript
+
+/**
+ * createImageTexture() returns a ImageTexture object
+ *
+ * @params {String} url
+ * @params {String} name = `image-${i}`
+ */
+const imgTexture = textureTool.createImageTexture('./test1.jpg');
+this.textures.push(imgTexture);
+this.materials.push(imgTexture.material);
+
+```
+
+Possibilities :
+
+```javascript
+
+const mesh = THREE.Mesh(
+  new THREE.MeshBasicMaterial(),
+  imageTexture.material,
+);
+
+const shaderMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    canvasMap: {
+      type: 't',
+      value: imageTexture.texture
+    },
+  },
+  vertexShader: shaderVert,
+  fragmentShader: shaderFrag,
+  side: THREE.DoubleSide,
+});
+```
+
 ## TODO / NEXT STEP
 
-- canvasTextureTool -> threejs-texture-tool :
-  - add .jpg, .png, .gif like canvas.
+- customCanvas directly on `createCanvasTexture(name, width, height, (context, params) => {})``
 
 - actions to hide the menu (Cmd+h ?)
 
-- use webpack to import css to js
+- use webpack to import css into js
 
 - drag and move all openned textures anywhere in the view
 
