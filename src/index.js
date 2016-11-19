@@ -1,6 +1,7 @@
 import CanvasTexture from './CanvasTexture';
+import ImageTexture from './ImageTexture';
 
-export default class CanvasTextureTool {
+export default class TextureTool {
   constructor(THREE) {
     if (!THREE) {
       // TODO create true error
@@ -10,56 +11,72 @@ export default class CanvasTextureTool {
 
     this.THREE = THREE;
 
-    this.canvasNameArr = [];
-    this.canvasWrapper = document.createElement('ul');
+    this.textureNameArr = [];
+    this.textureToolWrapper = document.createElement('ul');
 
     // Init canvas wrapper into the dom
-    this.canvasWrapper.id = 'canvas-texture-wrapper';
-    this.canvasWrapper.className = 'CanvasTextureTool-wrapper';
-    document.body.appendChild(this.canvasWrapper);
+    this.textureToolWrapper.id = 'texture-tool-wrapper';
+    this.textureToolWrapper.className = 'ThreejsTextureTool-wrapper';
+    document.body.appendChild(this.textureToolWrapper);
 
-    // Listener on keycode to toggle canvasWrapper
+    // Listener on keycode to toggle textureToolWrapper
     document.body.addEventListener('keydown', (e) => {
       console.log(e);
-      // TODO toggle canvasWrapper if Cmd+h pressed
+      // TODO toggle textureToolWrapper if Cmd+h pressed
     });
   }
 
-  createCanvasTexture(name = `canvas-${this.canvasNameArr.length}`, width = 256, height = 256) {
-    if (this.canvasNameArr.indexOf(name) !== -1) {
+  addInDom(name, texture) {
+    // HTML
+    const HTML = `
+      <li class="TextureTool">
+        <button id="${name}-open" class="TextureTool-button">${name}</button>
+        <div id="${name}-window" class="TextureTool-window TextureTool-hidden">
+          <button id="${name}-close" class="TextureTool-close"></button>
+        </div>
+      </li>
+    `;
+    this.textureToolWrapper.insertAdjacentHTML('beforeend', HTML);
+
+    // ACTIONS
+    const textureWindow = document.getElementById(`${name}-window`);
+    const openBtn = document.getElementById(`${name}-open`);
+    openBtn.addEventListener('click', () => {
+      openBtn.classList.add('TextureTool-hidden');
+      textureWindow.classList.remove('TextureTool-hidden');
+    });
+    const closeBtn = document.getElementById(`${name}-close`);
+    closeBtn.addEventListener('click', () => {
+      openBtn.classList.remove('TextureTool-hidden');
+      textureWindow.classList.add('TextureTool-hidden');
+    });
+    textureWindow.appendChild(texture);
+
+    // SAVE
+    this.textureNameArr.push(name);
+  }
+
+  createImageTexture(url, name = `image-${this.textureNameArr.length}`) {
+    if (this.textureNameArr.indexOf(name) !== -1) {
       // TODO create true error
       console.log('Err: Cannot have the same name', name);
       return;
     }
 
-    // HTML
-    const HTML = `
-      <li class="CanvasTexture">
-        <button id="${name}-open" class="CanvasTexture-button">${name}</button>
-        <div id="${name}-window" class="CanvasTexture-window CanvasTexture-hidden">
-          <button id="${name}-close" class="CanvasTexture-close"></button>
-        </div>
-      </li>
-    `;
-    this.canvasWrapper.insertAdjacentHTML('beforeend', HTML);
-    // ACTIONS
-    const openBtn = document.getElementById(`${name}-open`);
-    openBtn.addEventListener('click', () => {
-      openBtn.classList.add('CanvasTexture-hidden');
-      canvasWindow.classList.remove('CanvasTexture-hidden');
+    const imgTexture = new ImageTexture(this.THREE, url, image => {
+      this.addInDom(name, image);
     });
-    const closeBtn = document.getElementById(`${name}-close`);
-    closeBtn.addEventListener('click', () => {
-      openBtn.classList.remove('CanvasTexture-hidden');
-      canvasWindow.classList.add('CanvasTexture-hidden');
-    });
-    // CANVAS
-    const canvasTexure = new CanvasTexture(this.THREE, width, height);
-    const canvasWindow = document.getElementById(`${name}-window`);
-    canvasWindow.appendChild(canvasTexure.canvas);
+    return imgTexture;
+  }
 
-    // SAVE
-    this.canvasNameArr.push(name);
-    return canvasTexure;
+  createCanvasTexture(name = `canvas-${this.textureNameArr.length}`, width = 256, height = 256) {
+    if (this.textureNameArr.indexOf(name) !== -1) {
+      console.log('Err: Cannot have the same name', name);
+      return;
+    }
+
+    const canvasTexture = new CanvasTexture(this.THREE, width, height);
+    this.addInDom(name, canvasTexture.canvas);
+    return canvasTexture;
   }
 }

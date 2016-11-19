@@ -48,7 +48,6 @@ const canvasTT = new CanvasTextureTool(THREE);
 /**/   }
 /**/ }
 /**/ const webgl = new Webgl(windowWidth, windowHeight);
-console.log("jljkjlk")
 /**/ document.body.appendChild(webgl.dom);
 /**/
 /**/
@@ -61,13 +60,13 @@ class Block extends THREE.Object3D {
   constructor() {
     super();
 
-    this.canvasTextures = [];
+    this.textures = [];
     this.materials = [];
 
     let i;
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < 5; i++) {
       const cT = canvasTT.createCanvasTexture();
-      this.canvasTextures.push(cT);
+      this.textures.push(cT);
       cT.drawCustomCanvas({},  (context, props) => {
         context.rect(0, 0, props.width, props.height);
         context.fillStyle = bgColor;
@@ -94,8 +93,11 @@ class Block extends THREE.Object3D {
         cT.canvas.onmousemove = paint;
       });
       cT.update();
-      this.materials.push(this.canvasTextures[i].material);
+      this.materials.push(this.textures[i].material);
     }
+    const imgT = canvasTT.createImageTexture('./test1.jpg');
+    this.textures.push(imgT);
+    this.materials.push(imgT.material);
 
     this.geometry = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, 20, 20);
     this.material = new THREE.MeshFaceMaterial(this.materials);

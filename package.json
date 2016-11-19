@@ -1,7 +1,7 @@
 {
   "name": "threejs-texture-tool",
-  "version": "0.0.1",
-  "description": "Tool to preview and list your canvas texture for three.js",
+  "version": "1.0.0",
+  "description": "Tool to preview and list your canvas or picture texture to three.js",
   "scripts": {
     "start": "npm run build && npm run css:dev & npm run js:dev",
     "js:dev": "budo demo/app.js --live --dir ./demo --open -- -t [babelify --presets [ es2015 stage-0 ] ]",
