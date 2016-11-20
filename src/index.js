@@ -1,6 +1,8 @@
 import CanvasTexture from './CanvasTexture';
 import ImageTexture from './ImageTexture';
 
+import './style.styl';
+
 export default class TextureTool {
   constructor(THREE) {
     if (!THREE) {

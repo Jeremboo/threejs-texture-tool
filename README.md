@@ -1,7 +1,7 @@
-# ThreejsTextureTool 0.1.1
+
+# ThreejsTextureTool 0.2.0
 
 A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
-
 
 ![Threejs Texture Tool demo](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo.gif?raw=true)
 
@@ -14,7 +14,7 @@ A tool who build, show and update canvas or textures who can be used in a [three
 
 ```javascript
 import threejs from 'three-js';
-import CanvasTextureTool from 'threejs-texture-tool';
+import ThreejsTextureTool from 'threejs-texture-tool';
 
 const THREE = threejs();
 
@@ -23,7 +23,7 @@ const THREE = threejs();
  *
  * @params {Object} THREE
  */
-const textureTool = new CanvasTextureTool(THREE);
+const textureTool = new ThreejsTextureTool(THREE);
 
 ```
 

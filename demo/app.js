@@ -1,5 +1,7 @@
 import threeJs from 'three-js';
-import CanvasTextureTool from '../src';
+import CanvasTextureTool from '../src/index.js';
+
+import './style.styl';
 
 const THREE = threeJs();
 const canvasTT = new CanvasTextureTool(THREE);
@@ -20,9 +22,6 @@ const canvasTT = new CanvasTextureTool(THREE);
 /**/     this.scene = new THREE.Scene();
 /**/     this.camera = new THREE.PerspectiveCamera(50, w / h, 1, 1000);
 /**/     this.camera.position.set(0, 0, 10);
-        //  this.controls = new OrbitControls(this.camera);
-        //  this.controls.enableDamping = true;
-        //  this.controls.dampingFactor = 0.5;
 /**/     this.dom = this.renderer.domElement;
 /**/     this.update = this.update.bind(this);
 /**/     this.resize = this.resize.bind(this);

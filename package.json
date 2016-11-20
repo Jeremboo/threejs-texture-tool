@@ -1,14 +1,10 @@
 {
   "name": "threejs-texture-tool",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Tool to preview and list your canvas or picture texture to three.js",
   "scripts": {
-    "start": "npm run build && npm run css:dev & npm run js:dev",
-    "js:dev": "budo demo/app.js --live --dir ./demo --open -- -t [babelify --presets [ es2015 stage-0 ] ]",
-    "css:dev": "stylus -w demo/style.styl -u autoprefixer-stylus -o demo/style.css",
-    "build": "npm run css:build & npm run js:build",
-    "js:build": "browserify -t [babelify --presets [ es2015 stage-0 ] ] src/index.js -o dist/canvasTextureTool.js && uglifyjs dist/canvasTextureTool.js -o dist/canvasTextureTool.min.js",
-    "css:build": "stylus -w src/style.styl -u autoprefixer-stylus -c -o dist/canvasTextureTool.css"
+    "start": "WEBPACK_ENV=dev webpack-dev-server --progress --inline --hot --port 3333 --content-base demo",
+    "build": "WEBPACK_ENV=build webpack"
   },
   "keywords": [
     "webgl",
@@ -25,18 +21,23 @@
   "devDependencies": {
     "autoprefixer": "^6.3.1",
     "autoprefixer-stylus": "^0.9.4",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.8",
     "babel-preset-es2015": "^6.3.13",
-    "babel-preset-stage-0": "^6.5.0",
-    "babelify": "^7.2.0",
-    "browserify": "^13.0.0",
-    "budo": "^8.2.1",
+    "babel-preset-stage-0": "^6.16.0",
+    "css-loader": "^0.26.0",
     "eslint": "^3.4.0",
     "eslint-config-airbnb": "^10.0.1",
     "eslint-plugin-import": "^1.14.0",
     "eslint-plugin-jsx-a11y": "^2.2.1",
     "eslint-plugin-react": "^6.4.1",
     "poststylus": "^0.2.3",
-    "stylus": "^0.54.2",
-    "uglifyjs": "^2.4.10"
+    "style-loader": "^0.13.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^2.3.1",
+    "unminified-webpack-plugin": "^1.1.1",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
   }
 }
