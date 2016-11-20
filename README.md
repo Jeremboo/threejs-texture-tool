@@ -1,5 +1,5 @@
 
-# ThreejsTextureTool 0.2.0
+## ThreejsTextureTool 0.2.1
 
 A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
 

@@ -27,7 +27,7 @@ if (env === 'build') {
     umdNamedDefine: true,
   };
   plugins = [
-    new webpack.optimize.UglifyJsPlugin({ compress: false }),
+    new webpack.optimize.UglifyJsPlugin({ compress: true }),
     new UnminifiedWebpackPlugin(),
   ];
 } else {
