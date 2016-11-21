@@ -1,5 +1,7 @@
+import { MeshBasicMaterial, Texture } from 'three';
+
 export default class CanvasTexture {
-  constructor(THREE, width = 256, height = 256) {
+  constructor(width = 256, height = 256) {
     this.state = { width, height };
     this.canvas = null;
     this.context = null;
@@ -13,10 +15,10 @@ export default class CanvasTexture {
 
     this.context = this.canvas.getContext('2d');
 
-    this.texture = new THREE.Texture(this.canvas);
+    this.texture = new Texture(this.canvas);
     this.texture.needsUpdate = true;
 
-    this.material = new THREE.MeshBasicMaterial({
+    this.material = new MeshBasicMaterial({
       map: this.texture,
       overdraw: true,
     });

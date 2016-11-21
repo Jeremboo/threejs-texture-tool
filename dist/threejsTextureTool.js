@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("three"));
 	else if(typeof define === 'function' && define.amd)
-		define("threejsTextureTool", [], factory);
+		define("threejsTextureTool", ["three"], factory);
 	else if(typeof exports === 'object')
-		exports["threejsTextureTool"] = factory();
+		exports["threejsTextureTool"] = factory(require("three"));
 	else
-		root["threejsTextureTool"] = factory();
-})(this, function() {
+		root["threejsTextureTool"] = factory(root["three"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -66,11 +66,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _CanvasTexture2 = _interopRequireDefault(_CanvasTexture);
 	
-	var _ImageTexture = __webpack_require__(2);
+	var _ImageTexture = __webpack_require__(3);
 	
 	var _ImageTexture2 = _interopRequireDefault(_ImageTexture);
 	
-	var _style = __webpack_require__(3);
+	var _style = __webpack_require__(4);
 	
 	var _style2 = _interopRequireDefault(_style);
 	
@@ -79,16 +79,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var TextureTool = function () {
-	  function TextureTool(THREE) {
+	  function TextureTool() {
 	    _classCallCheck(this, TextureTool);
-	
-	    if (!THREE) {
-	      // TODO create true error
-	      console.log('Err: Three.js must be passed in parameter');
-	      return;
-	    }
-	
-	    this.THREE = THREE;
 	
 	    this.textureNameArr = [];
 	    this.textureToolWrapper = document.createElement('ul');
@@ -102,6 +94,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var style = document.createElement('style');
 	    style.innerHTML = _style2.default.toString();
 	    this.textureToolWrapper.appendChild(style);
+	
+	    this.addInDom = this.addInDom.bind(this);
+	    this.createImageTexture = this.createImageTexture.bind(this);
+	    this.createCanvasTexture = this.createCanvasTexture.bind(this);
 	
 	    // Listener on keycode to toggle textureToolWrapper
 	    document.body.addEventListener('keydown', function (e) {
@@ -147,7 +143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 	
-	      var imgTexture = new _ImageTexture2.default(this.THREE, url, function (image) {
+	      var imgTexture = new _ImageTexture2.default(url, function (image) {
 	        _this.addInDom(name, image);
 	      });
 	      return imgTexture;
@@ -164,7 +160,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 	
-	      var canvasTexture = new _CanvasTexture2.default(this.THREE, width, height);
+	      var canvasTexture = new _CanvasTexture2.default(width, height);
 	      this.addInDom(name, canvasTexture.canvas);
 	      return canvasTexture;
 	    }
@@ -177,7 +173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -187,12 +183,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
+	var _three = __webpack_require__(2);
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var CanvasTexture = function () {
-	  function CanvasTexture(THREE) {
-	    var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 256;
-	    var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 256;
+	  function CanvasTexture() {
+	    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 256;
+	    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 256;
 	
 	    _classCallCheck(this, CanvasTexture);
 	
@@ -211,10 +209,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    this.context = this.canvas.getContext('2d');
 	
-	    this.texture = new THREE.Texture(this.canvas);
+	    this.texture = new _three.Texture(this.canvas);
 	    this.texture.needsUpdate = true;
 	
-	    this.material = new THREE.MeshBasicMaterial({
+	    this.material = new _three.MeshBasicMaterial({
 	      map: this.texture,
 	      overdraw: true
 	    });
@@ -241,26 +239,34 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports) {
 
+	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
+	var _three = __webpack_require__(2);
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var ImageTexture = function ImageTexture(THREE, url, callback) {
+	var ImageTexture = function ImageTexture(url, callback) {
 	  var _this = this;
 	
 	  _classCallCheck(this, ImageTexture);
 	
 	  this.texture = null;
 	  this.image = null;
-	  this.material = new THREE.MeshBasicMaterial({
+	  this.material = new _three.MeshBasicMaterial({
 	    overdraw: true
 	  });
 	
-	  this.textureLoader = new THREE.TextureLoader().load(url, function (texture) {
+	  this.textureLoader = new _three.TextureLoader().load(url, function (texture) {
 	    _this.texture = texture;
 	    _this.image = texture.image;
 	    _this.material.needsUpdate = true;
@@ -276,10 +282,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ImageTexture;
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(4)();
+	exports = module.exports = __webpack_require__(5)();
 	// imports
 	
 	
@@ -290,7 +296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	/*

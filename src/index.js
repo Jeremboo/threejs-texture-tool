@@ -4,15 +4,7 @@ import ImageTexture from './ImageTexture';
 import css from './style.styl';
 
 export default class TextureTool {
-  constructor(THREE) {
-    if (!THREE) {
-      // TODO create true error
-      console.log('Err: Three.js must be passed in parameter');
-      return;
-    }
-
-    this.THREE = THREE;
-
+  constructor() {
     this.textureNameArr = [];
     this.textureToolWrapper = document.createElement('ul');
 
@@ -25,6 +17,10 @@ export default class TextureTool {
     const style = document.createElement('style');
     style.innerHTML = css.toString();
     this.textureToolWrapper.appendChild(style);
+
+    this.addInDom = this.addInDom.bind(this);
+    this.createImageTexture = this.createImageTexture.bind(this);
+    this.createCanvasTexture = this.createCanvasTexture.bind(this);
 
     // Listener on keycode to toggle textureToolWrapper
     document.body.addEventListener('keydown', (e) => {
@@ -70,7 +66,7 @@ export default class TextureTool {
       return;
     }
 
-    const imgTexture = new ImageTexture(this.THREE, url, image => {
+    const imgTexture = new ImageTexture(url, image => {
       this.addInDom(name, image);
     });
     return imgTexture;
@@ -82,7 +78,7 @@ export default class TextureTool {
       return;
     }
 
-    const canvasTexture = new CanvasTexture(this.THREE, width, height);
+    const canvasTexture = new CanvasTexture(width, height);
     this.addInDom(name, canvasTexture.canvas);
     return canvasTexture;
   }

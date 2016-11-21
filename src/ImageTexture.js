@@ -1,12 +1,14 @@
+import { TextureLoader, MeshBasicMaterial } from 'three';
+
 export default class ImageTexture {
-  constructor(THREE, url, callback) {
+  constructor(url, callback) {
     this.texture = null;
     this.image = null;
-    this.material = new THREE.MeshBasicMaterial({
+    this.material = new MeshBasicMaterial({
       overdraw: true,
     });
 
-    this.textureLoader = new THREE.TextureLoader().load(url, texture => {
+    this.textureLoader = new TextureLoader().load(url, texture => {
       this.texture = texture;
       this.image = texture.image;
       this.material.needsUpdate = true;

@@ -1,10 +1,9 @@
-import threeJs from 'three-js';
+import { Scene, WebGLRenderer, PerspectiveCamera, Object3D, BoxGeometry, MeshFaceMaterial, Mesh } from 'three';
 import CanvasTextureTool from '../src/index.js';
 
 import './style.styl';
 
-const THREE = threeJs();
-const canvasTT = new CanvasTextureTool(THREE);
+const canvasTT = new CanvasTextureTool();
 
 /**/ /* ---- CORE ---- */
 /**/ const mainColor = '#323031';
@@ -16,11 +15,11 @@ const canvasTT = new CanvasTextureTool(THREE);
 /**/   constructor(w, h) {
 /**/     this.meshCount = 0;
 /**/     this.meshListeners = [];
-/**/     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+/**/     this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
 /**/     this.renderer.setPixelRatio(window.devicePixelRatio);
-/**/     // this.renderer.setClearColor(new THREE.Color(bgColor)));
-/**/     this.scene = new THREE.Scene();
-/**/     this.camera = new THREE.PerspectiveCamera(50, w / h, 1, 1000);
+/**/     // this.renderer.setClearColor(new Color(bgColor)));
+/**/     this.scene = new Scene();
+/**/     this.camera = new PerspectiveCamera(50, w / h, 1, 1000);
 /**/     this.camera.position.set(0, 0, 10);
 /**/     this.dom = this.renderer.domElement;
 /**/     this.update = this.update.bind(this);
@@ -55,7 +54,7 @@ const canvasTT = new CanvasTextureTool(THREE);
 const CUBE_SIZE = 3;
 
 // OBJECTS
-class Block extends THREE.Object3D {
+class Block extends Object3D {
   constructor() {
     super();
 
@@ -98,9 +97,9 @@ class Block extends THREE.Object3D {
     this.textures.push(imgT);
     this.materials.push(imgT.material);
 
-    this.geometry = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, 20, 20);
-    this.material = new THREE.MeshFaceMaterial(this.materials);
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.geometry = new BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, 20, 20);
+    this.material = new MeshFaceMaterial(this.materials);
+    this.mesh = new Mesh(this.geometry, this.material);
     this.mesh.rotation.set(1.52, 0, 0);
     this.add(this.mesh);
 

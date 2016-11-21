@@ -2,6 +2,7 @@
   "name": "threejs-texture-tool",
   "version": "0.2.2",
   "description": "Tool to preview and list your canvas or picture texture to three.js",
+  "main": "dist/threejsTextureTool.js",
   "scripts": {
     "start": "WEBPACK_ENV=dev webpack-dev-server --progress --inline --hot --port 3333 --content-base demo",
     "build": "WEBPACK_ENV=build webpack"
@@ -15,8 +16,8 @@
   ],
   "author": "Jérémie Boulay <jeremi.boulay@gmail.com>",
   "license": "ISC",
-  "dependencies": {
-    "three-js": "^79.0.0"
+  "peersDependencies": {
+    "three": "*"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1",

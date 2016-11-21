@@ -12,6 +12,7 @@ var libraryName = 'threejsTextureTool';
 
 var entry = [];
 var output = {};
+var externals = {};
 var devtool = '';
 var plugins = [];
 
@@ -25,6 +26,9 @@ if (env === 'build') {
     library: libraryName,
     libraryTarget: 'umd',
     umdNamedDefine: true,
+  };
+  externals = {
+    three: true,
   };
   plugins = [
     new webpack.optimize.UglifyJsPlugin({ compress: true }),
@@ -47,7 +51,8 @@ if (env === 'build') {
 module.exports = {
   entry: entry,
   output: output,
-  externals: {},
+  devtool: devtool,
+  externals: externals,
   module: {
     loaders: [{
       test: /\.js$/,
