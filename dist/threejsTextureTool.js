@@ -126,9 +126,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        textureWindow.classList.add('TextureTool-hidden');
 	      });
 	      textureWindow.appendChild(texture);
-	
-	      // SAVE
+	    }
+	  }, {
+	    key: 'saveTexture',
+	    value: function saveTexture(name) {
+	      if (this.textureNameArr.indexOf(name) !== -1) {
+	        // TODO create true error
+	        console.log('Err: Cannot have the same name', name);
+	        return false;
+	      }
 	      this.textureNameArr.push(name);
+	      return true;
 	    }
 	  }, {
 	    key: 'createImageTexture',
@@ -137,16 +145,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'image-' + this.textureNameArr.length;
 	
-	      if (this.textureNameArr.indexOf(name) !== -1) {
-	        // TODO create true error
-	        console.log('Err: Cannot have the same name', name);
-	        return;
+	      if (this.saveTexture(name)) {
+	        var imgTexture = new _ImageTexture2.default(url, function (image) {
+	          _this.addInDom(name, image);
+	        });
+	        return imgTexture;
 	      }
-	
-	      var imgTexture = new _ImageTexture2.default(url, function (image) {
-	        _this.addInDom(name, image);
-	      });
-	      return imgTexture;
+	      return null;
 	    }
 	  }, {
 	    key: 'createCanvasTexture',
@@ -155,14 +160,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 256;
 	      var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 256;
 	
-	      if (this.textureNameArr.indexOf(name) !== -1) {
-	        console.log('Err: Cannot have the same name', name);
-	        return;
+	      if (this.saveTexture(name)) {
+	        var canvasTexture = new _CanvasTexture2.default(width, height);
+	        this.addInDom(name, canvasTexture.canvas);
+	        return canvasTexture;
 	      }
-	
-	      var canvasTexture = new _CanvasTexture2.default(width, height);
-	      this.addInDom(name, canvasTexture.canvas);
-	      return canvasTexture;
+	      return null;
 	    }
 	  }]);
 	

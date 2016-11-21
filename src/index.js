@@ -54,32 +54,34 @@ export default class TextureTool {
       textureWindow.classList.add('TextureTool-hidden');
     });
     textureWindow.appendChild(texture);
-
-    // SAVE
-    this.textureNameArr.push(name);
   }
 
-  createImageTexture(url, name = `image-${this.textureNameArr.length}`) {
+  saveTexture(name) {
     if (this.textureNameArr.indexOf(name) !== -1) {
       // TODO create true error
       console.log('Err: Cannot have the same name', name);
-      return;
+      return false;
     }
+    this.textureNameArr.push(name);
+    return true;
+  }
 
-    const imgTexture = new ImageTexture(url, image => {
-      this.addInDom(name, image);
-    });
-    return imgTexture;
+  createImageTexture(url, name = `image-${this.textureNameArr.length}`) {
+    if (this.saveTexture(name)) {
+      const imgTexture = new ImageTexture(url, image => {
+        this.addInDom(name, image);
+      });
+      return imgTexture;
+    }
+    return null;
   }
 
   createCanvasTexture(name = `canvas-${this.textureNameArr.length}`, width = 256, height = 256) {
-    if (this.textureNameArr.indexOf(name) !== -1) {
-      console.log('Err: Cannot have the same name', name);
-      return;
+    if (this.saveTexture(name)) {
+      const canvasTexture = new CanvasTexture(width, height);
+      this.addInDom(name, canvasTexture.canvas);
+      return canvasTexture;
     }
-
-    const canvasTexture = new CanvasTexture(width, height);
-    this.addInDom(name, canvasTexture.canvas);
-    return canvasTexture;
+    return null;
   }
 }

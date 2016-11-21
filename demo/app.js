@@ -62,7 +62,7 @@ class Block extends Object3D {
     this.materials = [];
 
     let i;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 4; i++) {
       const cT = canvasTT.createCanvasTexture();
       this.textures.push(cT);
       cT.drawCustomCanvas({},  (context, props) => {
@@ -96,6 +96,9 @@ class Block extends Object3D {
     const imgT = canvasTT.createImageTexture('./test1.jpg');
     this.textures.push(imgT);
     this.materials.push(imgT.material);
+    const imgT2 = canvasTT.createImageTexture('./test1.jpg');
+    this.textures.push(imgT2);
+    this.materials.push(imgT2.material);
 
     this.geometry = new BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, 20, 20);
     this.material = new MeshFaceMaterial(this.materials);
