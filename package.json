@@ -1,6 +1,6 @@
 {
   "name": "threejs-texture-tool",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Tool to preview and list your canvas or picture texture to three.js",
   "scripts": {
     "start": "WEBPACK_ENV=dev webpack-dev-server --progress --inline --hot --port 3333 --content-base demo",

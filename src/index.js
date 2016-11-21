@@ -1,7 +1,7 @@
 import CanvasTexture from './CanvasTexture';
 import ImageTexture from './ImageTexture';
 
-import './style.styl';
+import css from './style.styl';
 
 export default class TextureTool {
   constructor(THREE) {
@@ -20,6 +20,11 @@ export default class TextureTool {
     this.textureToolWrapper.id = 'texture-tool-wrapper';
     this.textureToolWrapper.className = 'ThreejsTextureTool-wrapper';
     document.body.appendChild(this.textureToolWrapper);
+
+    // Add css without style-loader
+    const style = document.createElement('style');
+    style.innerHTML = css.toString();
+    this.textureToolWrapper.appendChild(style);
 
     // Listener on keycode to toggle textureToolWrapper
     document.body.addEventListener('keydown', (e) => {

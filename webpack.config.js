@@ -56,7 +56,7 @@ module.exports = {
     },
     {
       test: /\.styl$/,
-      loader: 'style!css!stylus',
+      loader: 'css!stylus',
     }],
   },
   stylus: {
