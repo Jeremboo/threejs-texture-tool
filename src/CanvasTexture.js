@@ -22,6 +22,8 @@ export default class CanvasTexture {
       map: this.texture,
       overdraw: true,
     });
+
+    this.uniform = { type: 't', value: this.texture };
   }
 
   drawCustomCanvas(props, onUpdate) {

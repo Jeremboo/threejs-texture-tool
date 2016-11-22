@@ -1,5 +1,5 @@
 
-## ThreejsTextureTool 0.2.4
+## ThreejsTextureTool 0.2.5
 
 A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
 
@@ -81,7 +81,7 @@ const mesh = THREE.Mesh(
 // Use canvas into shader material
 const shaderMaterial = new THREE.ShaderMaterial({
   uniforms: {
-    canvasMap: { type: 't', value: canvasTexture.texture },
+    canvasMap: canvasTexture.uniform,
   },
   vertexShader: shaderVert,
   fragmentShader: shaderFrag,
@@ -103,9 +103,8 @@ const canvas = canvasTexture.canvas;
  * @params {String} url
  * @params {String} name = `image-${i}`
  */
-const imgTexture = textureTool.createImageTexture('./test1.jpg');
-this.textures.push(imgTexture);
-this.materials.push(imgTexture.material);
+const imgTestTextureTool = textureTool.createImageTexture('./test1.jpg');
+const materials = imgTestTextureTool.material;
 
 ```
 

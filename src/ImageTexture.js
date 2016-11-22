@@ -2,14 +2,12 @@ import { TextureLoader, MeshBasicMaterial } from 'three';
 
 export default class ImageTexture {
   constructor(url, callback) {
-    this.texture = null;
     this.image = null;
     this.material = new MeshBasicMaterial({
       overdraw: true,
     });
 
-    this.textureLoader = new TextureLoader().load(url, texture => {
-      this.texture = texture;
+    this.texture = new TextureLoader().load(url, texture => {
       this.image = texture.image;
       this.material.needsUpdate = true;
       this.material.map = this.texture;
@@ -19,5 +17,7 @@ export default class ImageTexture {
     }, (xhr) => {
       console.log('An error happened', xhr);
     });
+
+    this.uniform = { type: 't', value: this.texture };
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "threejs-texture-tool",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Tool to preview and list your canvas or picture texture to three.js",
   "main": "dist/threejsTextureTool.js",
   "scripts": {
