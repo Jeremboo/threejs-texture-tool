@@ -219,6 +219,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      map: this.texture,
 	      overdraw: true
 	    });
+	
+	    this.uniform = { type: 't', value: this.texture };
 	  }
 	
 	  _createClass(CanvasTexture, [{
@@ -263,14 +265,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  _classCallCheck(this, ImageTexture);
 	
-	  this.texture = null;
 	  this.image = null;
 	  this.material = new _three.MeshBasicMaterial({
 	    overdraw: true
 	  });
 	
-	  this.textureLoader = new _three.TextureLoader().load(url, function (texture) {
-	    _this.texture = texture;
+	  this.texture = new _three.TextureLoader().load(url, function (texture) {
 	    _this.image = texture.image;
 	    _this.material.needsUpdate = true;
 	    _this.material.map = _this.texture;
@@ -280,6 +280,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, function (xhr) {
 	    console.log('An error happened', xhr);
 	  });
+	
+	  this.uniform = { type: 't', value: this.texture };
 	};
 	
 	exports.default = ImageTexture;

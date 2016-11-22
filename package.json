@@ -1,11 +1,12 @@
 {
   "name": "threejs-texture-tool",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Tool to preview and list your canvas or picture texture to three.js",
   "main": "dist/threejsTextureTool.js",
   "scripts": {
     "start": "WEBPACK_ENV=dev webpack-dev-server --progress --inline --hot --port 3333 --content-base demo",
-    "build": "WEBPACK_ENV=build webpack"
+    "build": "WEBPACK_ENV=build webpack",
+    "publish": "npm run build && npm publish"
   },
   "keywords": [
     "webgl",
