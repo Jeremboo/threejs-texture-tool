@@ -2,25 +2,29 @@ main = #084C61;
 darken = darken(main, 35);
 
 .ThreejsTextureTool {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
 
   &-wrapper {
     position: fixed;
     top: 5vh;
     bottom: 5vh;
-    right: 0;
-    max-height: 90vh;    overflow-x: visible;
-    overflow-y: auto;
+    left: 0;
+    max-height: 90vh;
+    margin: 0;
     padding: 8px;
+    overflow-x: none;
+    overflow-y: auto;
+    list-style: none;
+    font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+  }
+
+  &_hidden {
+    display: none;
   }
 }
 
 .TextureTool {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-top: 8px;
 
   &-hidden {
@@ -34,6 +38,17 @@ darken = darken(main, 35);
   &-window {
     position: relative;
     pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: 0.2s;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 1);
+    }
+
+    img {
+      max-width: 200px;
+      width: 100%;
+    }
   }
 
   &-button, &-close {
@@ -60,7 +75,7 @@ darken = darken(main, 35);
     &:hover {
       max-width: 999px;
       background-color: darken;
-      transform: translateX(-8px);
+      // transform: translateX(8px);
       padding: 6px 32px;
     }
   }
@@ -70,7 +85,7 @@ darken = darken(main, 35);
     width: 20px;
     height: 20px;
     top: 5px;
-    right: 5px;
+    left: 5px;
     background-color: main;
     color: white;
     border-radius: 2px

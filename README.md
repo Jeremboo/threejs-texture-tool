@@ -1,5 +1,5 @@
 
-## [ThreejsTextureTool 0.2.6](https://github.com/Jeremboo/threejs-texture-tool)
+## [ThreejsTextureTool 0.3.0](https://github.com/Jeremboo/threejs-texture-tool)
 
 A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
 
@@ -10,35 +10,20 @@ A tool who build, show and update canvas or textures who can be used in a [three
 
 ## Getting Started (es6)
 
-### Init
-
-```javascript
-import threejs from 'three-js';
-import ThreejsTextureTool from 'threejs-texture-tool';
-
-const THREE = threejs();
-
-/**
- * constructor() create a texture tool
- *
- * @params {Object} THREE
- */
-const textureTool = new ThreejsTextureTool(THREE);
-
-```
-
 ### Create canvas Texture
 
 ```javascript
+import { createCanvasTexture } from 'threejs-texture-tool';
 
 /**
  * createCanvasTexture() return a CanvasTexture object
  *
- * @params {String} name = `canvas-${i}`
- * @params {Number} width = 256
- * @params {Number} height = 256
+ * @params {Object} Who  can content :
+ * - @params {String} name = `canvas-${i}`
+ * - @params {Number} width = 256
+ * - @params {Number} height = 256
  */
-const canvasTexture = textureTool.createCanvasTexture();
+const canvasTexture = createCanvasTexture();
 
 /**
  * drawCustomCanvas() code to draw on the canvas.
@@ -96,6 +81,7 @@ const canvas = canvasTexture.canvas;
 ### Create texture with an image
 
 ```javascript
+import { createImageTexture } from 'threejs-texture-tool';
 
 /**
  * createImageTexture() returns a ImageTexture object
@@ -103,7 +89,7 @@ const canvas = canvasTexture.canvas;
  * @params {String} url
  * @params {String} name = `image-${i}`
  */
-const imgTestTextureTool = textureTool.createImageTexture('./test1.jpg');
+const imgTestTextureTool = createImageTexture('./test1.jpg');
 const materials = imgTestTextureTool.material;
 
 ```
@@ -132,11 +118,9 @@ const shaderMaterial = new THREE.ShaderMaterial({
 
 ## TODO / NEXT STEP
 
-- customCanvas directly on `createCanvasTexture(name, width, height, (context, params) => {})``
+- customCanvas directly on `createCanvasTexture({ name, width, height }, (context, params) => {})``
 
-- actions to hide the menu (Cmd+h ?)
-
-- use webpack to import css into js
+- drag & drop directly a new image texure
 
 - drag and move all openned textures anywhere in the view
 

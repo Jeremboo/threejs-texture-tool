@@ -11,7 +11,7 @@ export default class ImageTexture {
       this.image = texture.image;
       this.material.needsUpdate = true;
       this.material.map = this.texture;
-      callback(this.image);
+      callback(this);
     }, (xhr) => {
       console.log((xhr.loaded / xhr.total * 100) + '% loaded');
     }, (xhr) => {

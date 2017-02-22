@@ -1,9 +1,8 @@
 import { Scene, WebGLRenderer, PerspectiveCamera, Object3D, BoxGeometry, MeshFaceMaterial, Mesh } from 'three';
-import CanvasTextureTool from '../src/index.js';
+import { createCanvasTexture, createImageTexture } from '../src/index.js';
 
 import './style.styl';
 
-const canvasTT = new CanvasTextureTool();
 
 /**/ /* ---- CORE ---- */
 /**/ const mainColor = '#323031';
@@ -63,7 +62,7 @@ class Block extends Object3D {
 
     let i;
     for (i = 0; i < 4; i++) {
-      const cT = canvasTT.createCanvasTexture();
+      const cT = createCanvasTexture();
       this.textures.push(cT);
       cT.drawCustomCanvas({},  (context, props) => {
         context.rect(0, 0, props.width, props.height);
@@ -93,10 +92,10 @@ class Block extends Object3D {
       cT.update();
       this.materials.push(this.textures[i].material);
     }
-    const imgT = canvasTT.createImageTexture('./test1.jpg');
+    const imgT = createImageTexture('./test1.jpg');
     this.textures.push(imgT);
     this.materials.push(imgT.material);
-    const imgT2 = canvasTT.createImageTexture('./test1.jpg');
+    const imgT2 = createImageTexture('./test1.jpg');
     this.textures.push(imgT2);
     this.materials.push(imgT2.material);
 

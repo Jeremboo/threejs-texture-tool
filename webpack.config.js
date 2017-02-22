@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var poststylus = require('poststylus');
 
 var node_modules = path.resolve(__dirname, './node_modules/');
@@ -31,7 +32,14 @@ if (env === 'build') {
     three: true,
   };
   plugins = [
-    new webpack.optimize.UglifyJsPlugin({ compress: true }),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: { warnings: true, drop_console: true },
+      comments: false,
+      sourceMap: false,
+      mangle: true,
+      minimize: true,
+    }),
     new UnminifiedWebpackPlugin(),
   ];
 } else {
@@ -44,8 +52,16 @@ if (env === 'build') {
     path: path.resolve(__dirname, './demo'),
     filename: 'bundle.js',
     publicPath: 'http://localhost:3333/',
+    devtoolModuleFilenameTemplate: 'webpack:///[absolute-resource-path]',
   };
-  devtool = 'source-map';
+  devtool = 'eval-source-map';
+  plugins = [
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new HtmlWebpackPlugin({
+      template: './demo/index.html',
+      // favicon: './app/assets/imgs/favicon.png',
+    }),
+  ];
 }
 
 module.exports = {
@@ -61,7 +77,7 @@ module.exports = {
     },
     {
       test: /\.styl$/,
-      loader: 'css!stylus',
+      loader: 'style!css!stylus',
     }],
   },
   stylus: {

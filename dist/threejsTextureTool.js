@@ -59,8 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.createCanvasTexture = exports.createImageTexture = undefined;
 	
 	var _CanvasTexture = __webpack_require__(1);
 	
@@ -76,103 +75,132 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	/**
+	 * #########################
+	 * INIT
+	 * #########################
+	 */
 	
-	var TextureTool = function () {
-	  function TextureTool() {
-	    _classCallCheck(this, TextureTool);
+	var textureNameArr = [];
 	
-	    this.textureNameArr = [];
-	    this.textureToolWrapper = document.createElement('ul');
+	// Init canvas wrapper into the dom
+	var textureToolWrapper = document.createElement('ul');
+	textureToolWrapper.id = 'texture-tool-wrapper';
+	textureToolWrapper.className = 'ThreejsTextureTool-wrapper';
+	document.body.appendChild(textureToolWrapper);
 	
-	    // Init canvas wrapper into the dom
-	    this.textureToolWrapper.id = 'texture-tool-wrapper';
-	    this.textureToolWrapper.className = 'ThreejsTextureTool-wrapper';
-	    document.body.appendChild(this.textureToolWrapper);
+	// Add css without style-loader
+	var style = document.createElement('style');
+	style.innerHTML = _style2.default.toString();
+	textureToolWrapper.appendChild(style);
 	
-	    // Add css without style-loader
-	    var style = document.createElement('style');
-	    style.innerHTML = _style2.default.toString();
-	    this.textureToolWrapper.appendChild(style);
-	
-	    this.addInDom = this.addInDom.bind(this);
-	    this.createImageTexture = this.createImageTexture.bind(this);
-	    this.createCanvasTexture = this.createCanvasTexture.bind(this);
-	
-	    // Listener on keycode to toggle textureToolWrapper
-	    document.body.addEventListener('keydown', function (e) {
-	      console.log(e);
-	      // TODO toggle textureToolWrapper if Cmd+h pressed
-	    });
+	// Listener on keycode to toggle textureToolWrapper when h pressed
+	document.body.addEventListener('keydown', function (e) {
+	  if (e.keyCode === 72) {
+	    textureToolWrapper.classList.toggle('ThreejsTextureTool_hidden');
 	  }
+	});
 	
-	  _createClass(TextureTool, [{
-	    key: 'addInDom',
-	    value: function addInDom(name, texture) {
-	      // HTML
-	      var HTML = '\n      <li class="TextureTool">\n        <button id="' + name + '-open" class="TextureTool-button">' + name + '</button>\n        <div id="' + name + '-window" class="TextureTool-window TextureTool-hidden">\n          <button id="' + name + '-close" class="TextureTool-close"></button>\n        </div>\n      </li>\n    ';
-	      this.textureToolWrapper.insertAdjacentHTML('beforeend', HTML);
+	/**
+	 * #########################
+	 * FUNCTION
+	 * #########################
+	 */
 	
-	      // ACTIONS
-	      var textureWindow = document.getElementById(name + '-window');
-	      var openBtn = document.getElementById(name + '-open');
-	      openBtn.addEventListener('click', function () {
-	        openBtn.classList.add('TextureTool-hidden');
-	        textureWindow.classList.remove('TextureTool-hidden');
-	      });
-	      var closeBtn = document.getElementById(name + '-close');
-	      closeBtn.addEventListener('click', function () {
-	        openBtn.classList.remove('TextureTool-hidden');
-	        textureWindow.classList.add('TextureTool-hidden');
-	      });
-	      textureWindow.appendChild(texture);
-	    }
-	  }, {
-	    key: 'saveTexture',
-	    value: function saveTexture(name) {
-	      if (this.textureNameArr.indexOf(name) !== -1) {
-	        // TODO create true error
-	        console.log('Err: Cannot have the same name', name);
-	        return false;
-	      }
-	      this.textureNameArr.push(name);
-	      return true;
-	    }
-	  }, {
-	    key: 'createImageTexture',
-	    value: function createImageTexture(url) {
-	      var _this = this;
+	/**
+	 * Add a texture viewer in DOM
+	 * @params {String} name
+	 * @params {Object} texture
+	 */
+	function addInDom(name, texture) {
+	  // HTML
+	  var HTML = '\n    <li class="TextureTool">\n      <button id="' + name + '-open" class="TextureTool-button">' + name + '</button>\n      <div id="' + name + '-window" class="TextureTool-window TextureTool-hidden">\n        <button id="' + name + '-close" class="TextureTool-close"></button>\n      </div>\n    </li>\n  ';
+	  textureToolWrapper.insertAdjacentHTML('beforeend', HTML);
 	
-	      var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'image-' + this.textureNameArr.length;
+	  // ACTIONS
+	  var textureWindow = document.getElementById(name + '-window');
+	  var openBtn = document.getElementById(name + '-open');
+	  openBtn.addEventListener('click', function () {
+	    openBtn.classList.add('TextureTool-hidden');
+	    textureWindow.classList.remove('TextureTool-hidden');
+	  });
+	  var closeBtn = document.getElementById(name + '-close');
+	  closeBtn.addEventListener('click', function () {
+	    openBtn.classList.remove('TextureTool-hidden');
+	    textureWindow.classList.add('TextureTool-hidden');
+	  });
+	  textureWindow.appendChild(texture);
+	}
 	
-	      if (this.saveTexture(name)) {
-	        var imgTexture = new _ImageTexture2.default(url, function (image) {
-	          _this.addInDom(name, image);
-	        });
-	        return imgTexture;
-	      }
-	      return null;
-	    }
-	  }, {
-	    key: 'createCanvasTexture',
-	    value: function createCanvasTexture() {
-	      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'canvas-' + this.textureNameArr.length;
-	      var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 256;
-	      var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 256;
+	/**
+	 * Add a texture into the array
+	 * @params {String} name
+	 */
+	function saveTexture(name) {
+	  if (textureNameArr.indexOf(name) !== -1) {
+	    // TODO create true error
+	    console.log('Err: Cannot have the same name', name);
+	    return false;
+	  }
+	  textureNameArr.push(name);
+	  return true;
+	}
 	
-	      if (this.saveTexture(name)) {
-	        var canvasTexture = new _CanvasTexture2.default(width, height);
-	        this.addInDom(name, canvasTexture.canvas);
-	        return canvasTexture;
-	      }
-	      return null;
-	    }
-	  }]);
+	/**
+	 * #########################
+	 * EXPORT
+	 * #########################
+	 */
 	
-	  return TextureTool;
-	}();
+	/**
+	 * Create an texture based on an image
+	 * @params {String}      url      of the image
+	 * @params {Object}      props    with :
+	 *  - @params {String}   name     id attribued at the texture
+	 *  - @params {Function} onLoad   a callback to handle the children
+	 */
+	var createImageTexture = exports.createImageTexture = function createImageTexture(url) {
+	  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+	      _ref$name = _ref.name,
+	      name = _ref$name === undefined ? 'image-' + textureNameArr.length : _ref$name,
+	      _ref$onLoad = _ref.onLoad,
+	      onLoad = _ref$onLoad === undefined ? function (f) {
+	    return f;
+	  } : _ref$onLoad;
 	
-	exports.default = TextureTool;
+	  if (saveTexture(name)) {
+	    var imgTexture = new _ImageTexture2.default(url, function (it) {
+	      addInDom(name, it.image);
+	      if (onLoad) onLoad(it);
+	    });
+	    return imgTexture;
+	  }
+	  return null;
+	};
+	
+	/**
+	 * Create an texture based on a canvas
+	 * @params {Object}      props    with :
+	 *  - @params {String}   name
+	 *  - @params {Number}   width
+	 *  - @params {Number} height
+	 */
+	var createCanvasTexture = exports.createCanvasTexture = function createCanvasTexture() {
+	  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+	      _ref2$name = _ref2.name,
+	      name = _ref2$name === undefined ? 'canvas-' + textureNameArr.length : _ref2$name,
+	      _ref2$width = _ref2.width,
+	      width = _ref2$width === undefined ? 256 : _ref2$width,
+	      _ref2$height = _ref2.height,
+	      height = _ref2$height === undefined ? 256 : _ref2$height;
+	
+	  if (saveTexture(name)) {
+	    var canvasTexture = new _CanvasTexture2.default(width, height);
+	    addInDom(name, canvasTexture.canvas);
+	    return canvasTexture;
+	  }
+	  return null;
+	};
 
 /***/ },
 /* 1 */
@@ -274,7 +302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _this.image = texture.image;
 	    _this.material.needsUpdate = true;
 	    _this.material.map = _this.texture;
-	    callback(_this.image);
+	    callback(_this);
 	  }, function (xhr) {
 	    console.log(xhr.loaded / xhr.total * 100 + '% loaded');
 	  }, function (xhr) {
@@ -295,7 +323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-	exports.push([module.id, ".ThreejsTextureTool{list-style:none;margin:0;padding:0;font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif}.ThreejsTextureTool-wrapper{position:fixed;top:5vh;bottom:5vh;right:0;max-height:90vh;overflow-x:visible;overflow-y:auto;padding:8px}.TextureTool{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-ms-flex-pack:end;justify-content:flex-end;margin-top:8px}.TextureTool-hidden{display:none}.TextureTool-canvas{position:absolute}.TextureTool-window{position:relative;pointer-events:auto}.TextureTool-button,.TextureTool-close{white-space:nowrap;text-overflow:ellipsis;border:none;font:inherit;line-height:normal;outline:none}.TextureTool-button{max-width:150px;padding:6px 16px;border-radius:2px;background-color:#084c61;color:#fff;overflow:hidden;font-size:.8em;-webkit-transition:.2s;transition:.2s;cursor:pointer;-webkit-transform:translateX(0);transform:translateX(0)}.TextureTool-button:hover{max-width:999px;background-color:#000;-webkit-transform:translateX(-8px);transform:translateX(-8px);padding:6px 32px}.TextureTool-close{position:absolute;width:20px;height:20px;top:5px;right:5px;background-color:#084c61;color:#fff;border-radius:2px;-webkit-transition:.4s;transition:.4s}.TextureTool-close:after{content:'x';position:absolute;top:46%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.TextureTool-close:hover{width:22px;height:22px;top:4px;right:4px;cursor:pointer;padding:4px 8px;background-color:#000}", ""]);
+	exports.push([module.id, ".ThreejsTextureTool{list-style:none;margin:0;padding:0;font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif}.ThreejsTextureTool-wrapper{position:fixed;top:5vh;bottom:5vh;left:0;max-height:90vh;overflow-x:visible;overflow-y:auto;padding:8px}.ThreejsTextureTool_hidden{display:none}.TextureTool{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-ms-flex-pack:end;justify-content:flex-end;margin-top:8px}.TextureTool-hidden{display:none}.TextureTool-canvas{position:absolute}.TextureTool-window{position:relative;pointer-events:auto;max-width:200px;background-color:rgba(0,0,0,.5);-webkit-transition:.2s;transition:.2s}.TextureTool-window:hover{background-color:#000}.TextureTool-window img{width:100%}.TextureTool-button,.TextureTool-close{white-space:nowrap;text-overflow:ellipsis;border:none;font:inherit;line-height:normal;outline:none}.TextureTool-button{max-width:150px;padding:6px 16px;border-radius:2px;background-color:#084c61;color:#fff;overflow:hidden;font-size:.8em;-webkit-transition:.2s;transition:.2s;cursor:pointer;-webkit-transform:translateX(0);transform:translateX(0)}.TextureTool-button:hover{max-width:999px;background-color:#000;-webkit-transform:translateX(8px);transform:translateX(8px);padding:6px 32px}.TextureTool-close{position:absolute;width:20px;height:20px;top:5px;left:5px;background-color:#084c61;color:#fff;border-radius:2px;-webkit-transition:.4s;transition:.4s}.TextureTool-close:after{content:\"x\";position:absolute;top:46%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.TextureTool-close:hover{width:22px;height:22px;top:4px;right:4px;cursor:pointer;padding:4px 8px;background-color:#000}", ""]);
 	
 	// exports
 
