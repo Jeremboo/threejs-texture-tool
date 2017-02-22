@@ -1,3 +1,5 @@
+import dragDrop from 'drag-drop';
+
 import CanvasTexture from './CanvasTexture';
 import ImageTexture from './ImageTexture';
 
@@ -67,6 +69,7 @@ function addInDom(name, texture) {
     textureWindow.classList.add('TextureTool-hidden');
   });
   textureWindow.appendChild(texture);
+  return textureWindow;
 }
 
 /**
@@ -99,9 +102,40 @@ function saveTexture(name) {
  */
 export const createImageTexture = (url, { name = `image-${textureNameArr.length}`, onLoad = f => f } = {}) => {
   if (saveTexture(name)) {
-    const imgTexture = new ImageTexture(url, it => {
-      addInDom(name, it.image);
-      if (onLoad) onLoad(it);
+    const imgTexture = new ImageTexture(url, () => {
+      const elm = addInDom(name, imgTexture.image);
+
+      // Drag Drop Event
+      dragDrop(`#${elm.id}`, files => {
+        // Read image from file data
+        const reader = new FileReader();
+        reader.addEventListener('load', (e) => {
+          const bytes = new Uint8Array(e.target.result);
+          const blob = new Blob([bytes.buffer]);
+          const URL = window.URL || window.webkitURL;
+          // remove the old img and update the image
+          elm.removeChild(imgTexture.image);
+          // Update the image with a new path
+          imgTexture.updateImg(URL.createObjectURL(blob), () => {
+            elm.appendChild(imgTexture.image);
+            onLoad(imgTexture);
+          });
+        });
+        reader.addEventListener('error', (err) => {
+          // TODO create true error
+          console.error('FileReader error' + err);
+        });
+
+        console.log(files[0].type);
+
+        if (['image/png', 'image/jpg', 'image/jpeg'].indexOf(files[0].type) === -1) {
+          console.log('FileUpdate error: The file is not at the good format');
+          return;
+        }
+        reader.readAsArrayBuffer(files[0]);
+      });
+
+      onLoad(imgTexture);
     });
     return imgTexture;
   }

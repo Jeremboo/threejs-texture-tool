@@ -1,5 +1,5 @@
 
-## [ThreejsTextureTool 0.3.0](https://github.com/Jeremboo/threejs-texture-tool)
+## [ThreejsTextureTool 0.4.0](https://github.com/Jeremboo/threejs-texture-tool)
 
 A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
 
@@ -118,9 +118,9 @@ const shaderMaterial = new THREE.ShaderMaterial({
 
 ## TODO / NEXT STEP
 
-- customCanvas directly on `createCanvasTexture({ name, width, height }, (context, params) => {})``
+- remove dragDrop to the dependencies
 
-- drag & drop directly a new image texure
+- customCanvas directly on `createCanvasTexture({ name, width, height }, (context, params) => {})``
 
 - drag and move all openned textures anywhere in the view
 

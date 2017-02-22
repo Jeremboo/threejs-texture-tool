@@ -20,4 +20,17 @@ export default class ImageTexture {
 
     this.uniform = { type: 't', value: this.texture };
   }
+
+  updateImg(newPath, callback) {
+    this.texture = new TextureLoader().load(newPath, texture => {
+      this.image = texture.image;
+      this.material.needsUpdate = true;
+      this.material.map = this.texture;
+      callback(this);
+    }, (xhr) => {
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    }, (xhr) => {
+      console.log('An error happened', xhr);
+    });
+  }
 }
