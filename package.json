@@ -3,6 +3,10 @@
   "version": "0.4.0",
   "description": "Tool to preview and list your canvas or picture texture to three.js",
   "main": "dist/threejsTextureTool.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jeremboo/threejs-texture-tool"
+  },
   "scripts": {
     "start": "WEBPACK_ENV=dev webpack-dev-server --progress --inline --hot --port 3333 --content-base demo --history-api-fallback --host 0.0.0.0",
     "build": "WEBPACK_ENV=build webpack",
