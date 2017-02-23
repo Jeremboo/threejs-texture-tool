@@ -61,6 +61,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.createCanvasTexture = exports.createImageTexture = undefined;
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	var _dragDrop = __webpack_require__(6);
 
 	var _dragDrop2 = _interopRequireDefault(_dragDrop);
@@ -174,42 +176,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } : _ref$onLoad;
 
 	  if (saveTexture(name)) {
-	    var imgTexture = new _ImageTexture2.default(url, function () {
-	      var elm = addInDom(name, imgTexture.image);
+	    var _ret = function () {
+	      var imgTexture = new _ImageTexture2.default(url, function () {
+	        var elm = addInDom(name, imgTexture.image);
 
-	      // Drag Drop Event
-	      (0, _dragDrop2.default)('#' + elm.id, function (files) {
-	        // Read image from file data
-	        var reader = new FileReader();
-	        reader.addEventListener('load', function (e) {
-	          var bytes = new Uint8Array(e.target.result);
-	          var blob = new Blob([bytes.buffer]);
-	          var URL = window.URL || window.webkitURL;
-	          // remove the old img and update the image
-	          elm.removeChild(imgTexture.image);
-	          // Update the image with a new path
-	          imgTexture.updateImg(URL.createObjectURL(blob), function () {
-	            elm.appendChild(imgTexture.image);
-	            onLoad(imgTexture);
+	        // Drag Drop Event
+	        (0, _dragDrop2.default)('#' + elm.id, function (files) {
+	          // Read image from file data
+	          var reader = new FileReader();
+	          reader.addEventListener('load', function (e) {
+	            var bytes = new Uint8Array(e.target.result);
+	            var blob = new Blob([bytes.buffer]);
+	            var URL = window.URL || window.webkitURL;
+	            // remove the old img and update the image
+	            elm.removeChild(imgTexture.image);
+	            // Update the image with a new path
+	            imgTexture.updateImg(URL.createObjectURL(blob), function () {
+	              elm.appendChild(imgTexture.image);
+	              onLoad(imgTexture);
+	            });
 	          });
-	        });
-	        reader.addEventListener('error', function (err) {
-	          // TODO create true error
-	          console.error('FileReader error' + err);
+	          reader.addEventListener('error', function (err) {
+	            // TODO create true error
+	            console.error('FileReader error' + err);
+	          });
+
+	          console.log(files[0].type);
+
+	          if (['image/png', 'image/jpg', 'image/jpeg'].indexOf(files[0].type) === -1) {
+	            console.log('FileUpdate error: The file is not at the good format');
+	            return;
+	          }
+	          reader.readAsArrayBuffer(files[0]);
 	        });
 
-	        console.log(files[0].type);
-
-	        if (['image/png', 'image/jpg', 'image/jpeg'].indexOf(files[0].type) === -1) {
-	          console.log('FileUpdate error: The file is not at the good format');
-	          return;
-	        }
-	        reader.readAsArrayBuffer(files[0]);
+	        onLoad(imgTexture);
 	      });
+	      return {
+	        v: imgTexture
+	      };
+	    }();
 
-	      onLoad(imgTexture);
-	    });
-	    return imgTexture;
+	    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	  }
 	  return null;
 	};
@@ -360,6 +368,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this2.image = texture.image;
 	        _this2.material.needsUpdate = true;
 	        _this2.material.map = _this2.texture;
+	        _this2.uniform.value = _this2.texture;
 	        callback(_this2);
 	      }, function (xhr) {
 	        console.log(xhr.loaded / xhr.total * 100 + '% loaded');
@@ -383,7 +392,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	// module
-	exports.push([module.id, ".ThreejsTextureTool-wrapper{position:fixed;top:5vh;bottom:5vh;left:0;max-height:90vh;margin:0;padding:8px;overflow-x:none;overflow-y:auto;list-style:none;font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif}.ThreejsTextureTool_hidden{display:none}.TextureTool{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;margin-top:8px}.TextureTool-hidden{display:none}.TextureTool-canvas{position:absolute}.TextureTool-window{position:relative;pointer-events:auto;background-color:rgba(0,0,0,.5);-webkit-transition:.2s;transition:.2s}.TextureTool-window:hover{background-color:#000}.TextureTool-window img{max-width:200px;width:100%}.TextureTool-window.drag:after{content:\"+\";display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;position:absolute;width:100%;height:100%;top:0;left:0;z-index:1;background-color:rgba(0,0,0,.5);color:#fff;font-size:3em}.TextureTool-button,.TextureTool-close{white-space:nowrap;text-overflow:ellipsis;border:none;font:inherit;line-height:normal;outline:none}.TextureTool-button{max-width:150px;padding:6px 16px;border-radius:2px;background-color:#084c61;color:#fff;overflow:hidden;font-size:.8em;-webkit-transition:.2s;transition:.2s;cursor:pointer;-webkit-transform:translateX(0);transform:translateX(0)}.TextureTool-button:hover{max-width:999px;background-color:#000;padding:6px 32px}.TextureTool-close{position:absolute;width:20px;height:20px;top:5px;left:5px;background-color:#084c61;color:#fff;border-radius:2px;-webkit-transition:.4s;transition:.4s}.TextureTool-close:after{content:\"x\";position:absolute;top:46%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.TextureTool-close:hover{width:22px;height:22px;top:4px;right:4px;cursor:pointer;padding:4px 8px;background-color:#000}", ""]);
+	exports.push([module.id, ".ThreejsTextureTool-wrapper{position:fixed;top:5vh;bottom:5vh;left:0;max-height:90vh;margin:0;padding:8px;overflow-x:none;overflow-y:auto;list-style:none;font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif}.ThreejsTextureTool_hidden{display:none}.TextureTool{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;margin-top:8px}.TextureTool-hidden{display:none}.TextureTool-canvas{position:absolute}.TextureTool-window{position:relative;pointer-events:auto;background-color:rgba(0,0,0,.5);-webkit-transition:.2s;transition:.2s}.TextureTool-window:hover{background-color:#000}.TextureTool-window img{max-width:200px;width:100%}.TextureTool-window.drag:after{content:'+';display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;position:absolute;width:100%;height:100%;top:0;left:0;z-index:1;background-color:rgba(0,0,0,.5);color:#fff;font-size:3em}.TextureTool-button,.TextureTool-close{white-space:nowrap;text-overflow:ellipsis;border:none;font:inherit;line-height:normal;outline:none}.TextureTool-button{max-width:150px;padding:6px 16px;border-radius:2px;background-color:#084c61;color:#fff;overflow:hidden;font-size:.8em;-webkit-transition:.2s;transition:.2s;cursor:pointer;-webkit-transform:translateX(0);transform:translateX(0)}.TextureTool-button:hover{max-width:999px;background-color:#000;padding:6px 32px}.TextureTool-close{position:absolute;width:20px;height:20px;top:5px;left:5px;background-color:#084c61;color:#fff;border-radius:2px;-webkit-transition:.4s;transition:.4s}.TextureTool-close:after{content:'x';position:absolute;top:46%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.TextureTool-close:hover{width:22px;height:22px;top:4px;right:4px;cursor:pointer;padding:4px 8px;background-color:#000}", ""]);
 
 	// exports
 
@@ -1178,8 +1187,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/stylus-loader/index.js!./style.styl", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/stylus-loader/index.js!./style.styl");
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/stylus-loader/index.js!./style.styl", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/stylus-loader/index.js!./style.styl");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});

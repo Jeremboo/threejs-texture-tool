@@ -1,11 +1,12 @@
 
-## [ThreejsTextureTool 0.4.0](https://github.com/Jeremboo/threejs-texture-tool)
+## [ThreejsTextureTool 0.4.1](https://github.com/Jeremboo/threejs-texture-tool)
 
 A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
 
 ![Threejs Texture Tool demo](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo.gif?raw=true)
+![Threejs Texture Tool demo2](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo2.gif?raw=true)
 
-[demo](http://codepen.io/Jeremboo/full/qqabKY/)
+[demo 0.2.6](http://codepen.io/Jeremboo/full/qqabKY/)
 
 
 ## Getting Started (es6)
