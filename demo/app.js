@@ -57,47 +57,48 @@ class Block extends Object3D {
   constructor() {
     super();
 
-    this.textures = [];
     this.materials = [];
 
     let i;
     for (i = 0; i < 4; i++) {
-      const cT = createCanvasTexture();
-      this.textures.push(cT);
-      cT.drawCustomCanvas({},  (context, props) => {
-        context.rect(0, 0, props.width, props.height);
-        context.fillStyle = bgColor;
-        context.fill();
-        // http://codepen.io/jbpenrath/pen/gLObej
-        let mouseDown = false;
-        const paint = e => {
-          if (mouseDown) {
-            context.beginPath();
-            context.arc(e.offsetX, e.offsetY, 10, 0, 2 * Math.PI, false);
-            context.fillStyle = mainColor;
-            context.fill();
-            context.closePath();
-            cT.texture.needsUpdate = true;
-          }
-        };
-        cT.canvas.onmousedown = e => {
-          mouseDown = true;
-          paint(e);
-        };
-        cT.canvas.onmouseup = () => {
-          mouseDown = false;
-        };
-        cT.canvas.onmousemove = paint;
+      const canvasTexture = createCanvasTexture({
+        name: 'canvas',
+        onStart: (canvasTextureProps) => {
+          const { width, height, context, canvas, update } = canvasTextureProps;
+          context.rect(0, 0, width, height);
+          context.fillStyle = bgColor;
+          context.fill();
+          // http://codepen.io/jbpenrath/pen/gLObej
+          let mouseDown = false;
+          const paint = e => {
+            // call the method `onUpdate` defined bellow
+            if (mouseDown) update(e.offsetX, e.offsetY);
+          };
+          canvas.onmousedown = e => {
+            mouseDown = true;
+            paint(e);
+          };
+          canvas.onmouseup = () => {
+            mouseDown = false;
+          };
+          canvas.onmousemove = paint;
+        },
+        // custom attributes
+        onUpdate: (x, y) => {
+          const { context } = canvasTexture;
+          context.beginPath();
+          context.arc(x, y, 10, 0, 2 * Math.PI, false);
+          context.fillStyle = mainColor;
+          context.fill();
+          context.closePath();
+        },
       });
-      cT.update();
-      this.materials.push(this.textures[i].material);
+      this.materials.push(canvasTexture.material);
     }
-    const imgT = createImageTexture('./test1.jpg');
-    this.textures.push(imgT);
-    this.materials.push(imgT.material);
-    const imgT2 = createImageTexture('./test1.jpg');
-    this.textures.push(imgT2);
-    this.materials.push(imgT2.material);
+
+    // Add imageTexture
+    this.materials.push(createImageTexture('./test1.jpg').material);
+    this.materials.push(createImageTexture('./test1.jpg').material);
 
     this.geometry = new BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, 20, 20);
     this.material = new MeshFaceMaterial(this.materials);

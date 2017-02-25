@@ -61,8 +61,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.createCanvasTexture = exports.createImageTexture = undefined;
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 	var _dragDrop = __webpack_require__(6);
 
 	var _dragDrop2 = _interopRequireDefault(_dragDrop);
@@ -140,17 +138,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
-	 * Add a texture into the array
+	 * Add a texture name into the array
 	 * @params {String} name
 	 */
-	function saveTexture(name) {
-	  if (textureNameArr.indexOf(name) !== -1) {
-	    // TODO create true error
-	    console.log('Err: Cannot have the same name', name);
-	    return false;
-	  }
-	  textureNameArr.push(name);
-	  return true;
+	function saveTextureName(name) {
+	  var getUniqueName = function getUniqueName(currentName) {
+	    var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+	    var n = '' + currentName + (i !== 0 ? '-' + i : '');
+	    return textureNameArr.indexOf(n) !== -1 ? getUniqueName(currentName, i + 1) : n;
+	  };
+	  var uniqueName = getUniqueName(name);
+	  textureNameArr.push(uniqueName);
+	  return uniqueName;
 	}
 
 	/**
@@ -163,87 +163,83 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Create an texture based on an image
 	 * @params {String}      url      of the image
 	 * @params {Object}      props    with :
-	 *  - @params {String}   name     id attribued at the texture
-	 *  - @params {Function} onLoad   a callback to handle the children
+	 *  - @params {String}     name     id attribued at the texture
+	 *  - @params {Function}   onLoad   a callback to handle the children
 	 */
 	var createImageTexture = exports.createImageTexture = function createImageTexture(url) {
 	  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
 	      _ref$name = _ref.name,
-	      name = _ref$name === undefined ? 'image-' + textureNameArr.length : _ref$name,
+	      name = _ref$name === undefined ? 'imageTexture' : _ref$name,
 	      _ref$onLoad = _ref.onLoad,
 	      onLoad = _ref$onLoad === undefined ? function (f) {
 	    return f;
 	  } : _ref$onLoad;
 
-	  if (saveTexture(name)) {
-	    var _ret = function () {
-	      var imgTexture = new _ImageTexture2.default(url, function () {
-	        var elm = addInDom(name, imgTexture.image);
+	  var imgTexture = new _ImageTexture2.default(url, function () {
+	    var elm = addInDom(saveTextureName(name), imgTexture.image);
 
-	        // Drag Drop Event
-	        (0, _dragDrop2.default)('#' + elm.id, function (files) {
-	          // Read image from file data
-	          var reader = new FileReader();
-	          reader.addEventListener('load', function (e) {
-	            var bytes = new Uint8Array(e.target.result);
-	            var blob = new Blob([bytes.buffer]);
-	            var URL = window.URL || window.webkitURL;
-	            // remove the old img and update the image
-	            elm.removeChild(imgTexture.image);
-	            // Update the image with a new path
-	            imgTexture.updateImg(URL.createObjectURL(blob), function () {
-	              elm.appendChild(imgTexture.image);
-	              onLoad(imgTexture);
-	            });
-	          });
-	          reader.addEventListener('error', function (err) {
-	            // TODO create true error
-	            console.error('FileReader error' + err);
-	          });
-
-	          console.log(files[0].type);
-
-	          if (['image/png', 'image/jpg', 'image/jpeg'].indexOf(files[0].type) === -1) {
-	            console.log('FileUpdate error: The file is not at the good format');
-	            return;
-	          }
-	          reader.readAsArrayBuffer(files[0]);
+	    // Drag Drop Event
+	    (0, _dragDrop2.default)('#' + elm.id, function (files) {
+	      // Read image from file data
+	      var reader = new FileReader();
+	      reader.addEventListener('load', function (e) {
+	        var bytes = new Uint8Array(e.target.result);
+	        var blob = new Blob([bytes.buffer]);
+	        var URL = window.URL || window.webkitURL;
+	        // remove the old img and update the image
+	        elm.removeChild(imgTexture.image);
+	        // Update the image with a new path
+	        imgTexture.updateImg(URL.createObjectURL(blob), function () {
+	          elm.appendChild(imgTexture.image);
+	          onLoad(imgTexture);
 	        });
-
-	        onLoad(imgTexture);
 	      });
-	      return {
-	        v: imgTexture
-	      };
-	    }();
+	      reader.addEventListener('error', function (err) {
+	        // TODO create true error
+	        console.error('FileReader error' + err);
+	      });
 
-	    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-	  }
-	  return null;
+	      if (['image/png', 'image/jpg', 'image/jpeg'].indexOf(files[0].type) === -1) {
+	        console.log('FileUpdate error: The file is not at the good format');
+	        return;
+	      }
+	      reader.readAsArrayBuffer(files[0]);
+	    });
+
+	    onLoad(imgTexture);
+	  });
+	  return imgTexture;
 	};
 
 	/**
 	 * Create an texture based on a canvas
-	 * @params {Object}      props    with :
-	 *  - @params {String}   name
-	 *  - @params {Number}   width
-	 *  - @params {Number} height
+	 * @params {Object}        props     with :
+	 *  - @params {String}       name
+	 *  - @params {Number}       width
+	 *  - @params {Number}       height
+	 *  - @params {Function}     onStart   The drawing canvas function
+	 *  - @params {Function}     onUpdate  Method called to update the canvas
 	 */
 	var createCanvasTexture = exports.createCanvasTexture = function createCanvasTexture() {
 	  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
 	      _ref2$name = _ref2.name,
-	      name = _ref2$name === undefined ? 'canvas-' + textureNameArr.length : _ref2$name,
+	      name = _ref2$name === undefined ? 'canvasTexture' : _ref2$name,
 	      _ref2$width = _ref2.width,
 	      width = _ref2$width === undefined ? 256 : _ref2$width,
 	      _ref2$height = _ref2.height,
-	      height = _ref2$height === undefined ? 256 : _ref2$height;
+	      height = _ref2$height === undefined ? 256 : _ref2$height,
+	      _ref2$onStart = _ref2.onStart,
+	      onStart = _ref2$onStart === undefined ? function (f) {
+	    return f;
+	  } : _ref2$onStart,
+	      _ref2$onUpdate = _ref2.onUpdate,
+	      onUpdate = _ref2$onUpdate === undefined ? function (f) {
+	    return f;
+	  } : _ref2$onUpdate;
 
-	  if (saveTexture(name)) {
-	    var canvasTexture = new _CanvasTexture2.default(width, height);
-	    addInDom(name, canvasTexture.canvas);
-	    return canvasTexture;
-	  }
-	  return null;
+	  var canvasTexture = new _CanvasTexture2.default({ width: width, height: height, onStart: onStart, onUpdate: onUpdate });
+	  addInDom(saveTextureName(name), canvasTexture.canvas);
+	  return canvasTexture;
 	};
 
 /***/ },
@@ -261,62 +257,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.default = CanvasTexture;
 
 	var _three = __webpack_require__(1);
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function CanvasTexture(_ref) {
+	  var _this = this;
 
-	var CanvasTexture = function () {
-	  function CanvasTexture() {
-	    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 256;
-	    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 256;
+	  var _ref$width = _ref.width,
+	      width = _ref$width === undefined ? 256 : _ref$width,
+	      _ref$height = _ref.height,
+	      height = _ref$height === undefined ? 256 : _ref$height,
+	      _ref$onStart = _ref.onStart,
+	      onStart = _ref$onStart === undefined ? function (f) {
+	    return f;
+	  } : _ref$onStart,
+	      _ref$onUpdate = _ref.onUpdate,
+	      onUpdate = _ref$onUpdate === undefined ? function (f) {
+	    return f;
+	  } : _ref$onUpdate;
 
-	    _classCallCheck(this, CanvasTexture);
+	  this.width = width;
+	  this.height = height;
 
-	    this.state = { width: width, height: height };
-	    this.canvas = null;
-	    this.context = null;
-	    this.texture = null;
-	    this.material = null;
-	    this.update = function (f) {
-	      return f;
-	    };
+	  this.canvas = document.createElement('canvas');
+	  this.canvas.width = width;
+	  this.canvas.height = height;
 
-	    this.canvas = document.createElement('canvas');
-	    this.canvas.width = width;
-	    this.canvas.height = height;
+	  this.context = this.canvas.getContext('2d');
 
-	    this.context = this.canvas.getContext('2d');
+	  this.texture = new _three.Texture(this.canvas);
+	  this.texture.needsUpdate = true;
 
-	    this.texture = new _three.Texture(this.canvas);
-	    this.texture.needsUpdate = true;
+	  this.material = new _three.MeshBasicMaterial({
+	    map: this.texture,
+	    overdraw: true
+	  });
 
-	    this.material = new _three.MeshBasicMaterial({
-	      map: this.texture,
-	      overdraw: true
-	    });
+	  this.uniform = { type: 't', value: this.texture };
 
-	    this.uniform = { type: 't', value: this.texture };
-	  }
+	  this.update = function () {
+	    onUpdate.apply(undefined, arguments);
+	    _this.texture.needsUpdate = true;
+	  };
 
-	  _createClass(CanvasTexture, [{
-	    key: 'drawCustomCanvas',
-	    value: function drawCustomCanvas(props, onUpdate) {
-	      var _this = this;
-
-	      this.update = function () {
-	        onUpdate(_this.context, Object.assign({}, _this.state, props));
-	        _this.texture.needsUpdate = true;
-	      };
-	    }
-	  }]);
-
-	  return CanvasTexture;
-	}();
-
-	exports.default = CanvasTexture;
+	  onStart(this);
+	}
 
 /***/ },
 /* 3 */
@@ -392,7 +378,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	// module
-	exports.push([module.id, ".ThreejsTextureTool-wrapper{position:fixed;top:5vh;bottom:5vh;left:0;max-height:90vh;margin:0;padding:8px;overflow-x:none;overflow-y:auto;list-style:none;font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif}.ThreejsTextureTool_hidden{display:none}.TextureTool{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;margin-top:8px}.TextureTool-hidden{display:none}.TextureTool-canvas{position:absolute}.TextureTool-window{position:relative;pointer-events:auto;background-color:rgba(0,0,0,.5);-webkit-transition:.2s;transition:.2s}.TextureTool-window:hover{background-color:#000}.TextureTool-window img{max-width:200px;width:100%}.TextureTool-window.drag:after{content:'+';display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;position:absolute;width:100%;height:100%;top:0;left:0;z-index:1;background-color:rgba(0,0,0,.5);color:#fff;font-size:3em}.TextureTool-button,.TextureTool-close{white-space:nowrap;text-overflow:ellipsis;border:none;font:inherit;line-height:normal;outline:none}.TextureTool-button{max-width:150px;padding:6px 16px;border-radius:2px;background-color:#084c61;color:#fff;overflow:hidden;font-size:.8em;-webkit-transition:.2s;transition:.2s;cursor:pointer;-webkit-transform:translateX(0);transform:translateX(0)}.TextureTool-button:hover{max-width:999px;background-color:#000;padding:6px 32px}.TextureTool-close{position:absolute;width:20px;height:20px;top:5px;left:5px;background-color:#084c61;color:#fff;border-radius:2px;-webkit-transition:.4s;transition:.4s}.TextureTool-close:after{content:'x';position:absolute;top:46%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.TextureTool-close:hover{width:22px;height:22px;top:4px;right:4px;cursor:pointer;padding:4px 8px;background-color:#000}", ""]);
+	exports.push([module.id, ".ThreejsTextureTool-wrapper{position:fixed;top:5vh;bottom:5vh;left:0;max-height:90vh;margin:0;padding:8px;overflow-x:none;overflow-y:auto;list-style:none;font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif}.ThreejsTextureTool_hidden{display:none}.TextureTool{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;margin-top:8px}.TextureTool-hidden{display:none}.TextureTool-canvas{position:absolute}.TextureTool-window{position:relative;pointer-events:auto;background-color:rgba(0,0,0,.5);-webkit-transition:.2s;transition:.2s}.TextureTool-window:hover{background-color:#000}.TextureTool-window img{max-width:200px;width:100%}.TextureTool-window canvas{cursor:pointer}.TextureTool-window.drag:after{content:'+';display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;position:absolute;width:100%;height:100%;top:0;left:0;z-index:1;background-color:rgba(0,0,0,.5);color:#fff;font-size:3em}.TextureTool-button,.TextureTool-close{white-space:nowrap;text-overflow:ellipsis;border:none;font:inherit;line-height:normal;outline:none}.TextureTool-button{max-width:150px;padding:6px 16px;border-radius:2px;background-color:#084c61;color:#fff;overflow:hidden;font-size:.8em;-webkit-transition:.2s;transition:.2s;cursor:pointer;-webkit-transform:translateX(0);transform:translateX(0)}.TextureTool-button:hover{max-width:999px;background-color:#000;padding:6px 32px}.TextureTool-close{position:absolute;width:20px;height:20px;top:5px;left:5px;background-color:#084c61;color:#fff;border-radius:2px;-webkit-transition:.4s;transition:.4s}.TextureTool-close:after{content:'x';position:absolute;top:46%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.TextureTool-close:hover{width:22px;height:22px;top:4px;right:4px;cursor:pointer;padding:4px 8px;background-color:#000}", ""]);
 
 	// exports
 
