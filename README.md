@@ -1,10 +1,7 @@
 
-## [ThreejsTextureTool 0.4.1](https://github.com/Jeremboo/threejs-texture-tool)
+## [ThreejsTextureTool 0.5.0](https://github.com/Jeremboo/threejs-texture-tool)
 
-A tool who build, show and update canvas or textures who can be used in a [three.js](https://threejs.org/) project.
-
-![Threejs Texture Tool demo](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo.gif?raw=true)
-![Threejs Texture Tool demo2](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo2.gif?raw=true)
+A tool to preview and update your canvases or pictures used for your [three.js](https://threejs.org/) textures
 
 [demo 0.2.6](http://codepen.io/Jeremboo/full/qqabKY/)
 
@@ -13,9 +10,35 @@ A tool who build, show and update canvas or textures who can be used in a [three
 
 ### Create canvas Texture
 
+![Threejs Texture Tool canvas texture demo](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo.gif?raw=true)
+
 ```javascript
 import { createCanvasTexture } from 'threejs-texture-tool';
 
+// Create a canvasTexture
+const canvasTexture = createCanvasTexture({
+  name: 'drawer',
+  onStart: (props) => {
+    // Draw once a rectangle and add a mouse move Listener
+    // To update this canvas
+    const { width, height, context, canvas, update } = props;
+    context.rect(0, 0, width, height);
+    context.fillStyle = '#F6FF49';
+    context.fill();
+    canvas.onmousemove = e => {
+      update(e.offsetX, e.offsetY);
+    };
+  },
+  onUpdate: (x, y) => {
+    // Called by `canvasTexture.udpate(...)`
+    const { context } = canvasTexture;
+    context.beginPath();
+    context.arc(x, y, 10, 0, 2 * Math.PI, false);
+    context.fillStyle = mainColor;
+    context.fill();
+    context.closePath();
+  },
+});
 /**
  * createCanvasTexture() return a CanvasTexture object
  *
@@ -79,42 +102,42 @@ const canvas = canvasTexture.canvas;
 
 ```
 
-### Create texture with an image
+### Create texture with a picture
+
+![Threejs Texture Tool demo with picture](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo2.gif?raw=true)
 
 ```javascript
 import { createImageTexture } from 'threejs-texture-tool';
 
-/**
- * createImageTexture() returns a ImageTexture object
- *
- * @params {String} url
- * @params {String} name = `image-${i}`
- */
-const imgTestTextureTool = createImageTexture('./test1.jpg');
-const materials = imgTestTextureTool.material;
+// Load the picture
+const imgTexture = createImageTexture('./test1.jpg', { name: 'test', onLoad: () => {
+  imgTexture.texture.wrapS =
+  imgTexture.texture.wrapT =
+  imgTexture.uniform.value.wrapS =
+  imgTexture.uniform.value.wrapT =
+  REPEAT_WRAPPING;
+} });
 
-```
-
-Possibilities :
-
-```javascript
-
+// Use it as material
 const mesh = THREE.Mesh(
-  new THREE.MeshBasicMaterial(),
-  imageTexture.material,
+  new BoxGeometry(1, 1, 1),
+  imgTexture.material,
 );
 
-const shaderMaterial = new THREE.ShaderMaterial({
+// Into shaderMaterial
+const shaderMaterial = new ShaderMaterial({
   uniforms: {
-    canvasMap: {
-      type: 't',
-      value: imageTexture.texture
-    },
+    imgMap: imgTexture.uniform,
   },
   vertexShader: shaderVert,
   fragmentShader: shaderFrag,
-  side: THREE.DoubleSide,
+  side: DoubleSide,
 });
+
+// Other access
+const img = document.createElement('img');
+img.src = imgTexture.image;
+
 ```
 
 ## TODO / NEXT STEP

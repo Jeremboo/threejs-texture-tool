@@ -73,17 +73,20 @@ function addInDom(name, texture) {
 }
 
 /**
- * Add a texture into the array
+ * Add a texture name into the array
  * @params {String} name
  */
-function saveTexture(name) {
-  if (textureNameArr.indexOf(name) !== -1) {
-    // TODO create true error
-    console.log('Err: Cannot have the same name', name);
-    return false;
-  }
-  textureNameArr.push(name);
-  return true;
+function saveTextureName(name) {
+  const getUniqueName = (currentName, i = 0) => {
+    const n = `${currentName}${(i !== 0) ? `-${i}` : ''}`;
+    return (textureNameArr.indexOf(n) !== -1)
+    ? getUniqueName(currentName, i + 1)
+    : n
+    ;
+  };
+  const uniqueName = getUniqueName(name);
+  textureNameArr.push(uniqueName);
+  return uniqueName;
 }
 
 
@@ -97,63 +100,57 @@ function saveTexture(name) {
  * Create an texture based on an image
  * @params {String}      url      of the image
  * @params {Object}      props    with :
- *  - @params {String}   name     id attribued at the texture
- *  - @params {Function} onLoad   a callback to handle the children
+ *  - @params {String}     name     id attribued at the texture
+ *  - @params {Function}   onLoad   a callback to handle the children
  */
-export const createImageTexture = (url, { name = `image-${textureNameArr.length}`, onLoad = f => f } = {}) => {
-  if (saveTexture(name)) {
-    const imgTexture = new ImageTexture(url, () => {
-      const elm = addInDom(name, imgTexture.image);
+export const createImageTexture = (url, { name = 'imageTexture', onLoad = f => f } = {}) => {
+  const imgTexture = new ImageTexture(url, () => {
+    const elm = addInDom(saveTextureName(name), imgTexture.image);
 
-      // Drag Drop Event
-      dragDrop(`#${elm.id}`, files => {
-        // Read image from file data
-        const reader = new FileReader();
-        reader.addEventListener('load', (e) => {
-          const bytes = new Uint8Array(e.target.result);
-          const blob = new Blob([bytes.buffer]);
-          const URL = window.URL || window.webkitURL;
-          // remove the old img and update the image
-          elm.removeChild(imgTexture.image);
-          // Update the image with a new path
-          imgTexture.updateImg(URL.createObjectURL(blob), () => {
-            elm.appendChild(imgTexture.image);
-            onLoad(imgTexture);
-          });
+    // Drag Drop Event
+    dragDrop(`#${elm.id}`, files => {
+      // Read image from file data
+      const reader = new FileReader();
+      reader.addEventListener('load', (e) => {
+        const bytes = new Uint8Array(e.target.result);
+        const blob = new Blob([bytes.buffer]);
+        const URL = window.URL || window.webkitURL;
+        // remove the old img and update the image
+        elm.removeChild(imgTexture.image);
+        // Update the image with a new path
+        imgTexture.updateImg(URL.createObjectURL(blob), () => {
+          elm.appendChild(imgTexture.image);
+          onLoad(imgTexture);
         });
-        reader.addEventListener('error', (err) => {
-          // TODO create true error
-          console.error('FileReader error' + err);
-        });
-
-        console.log(files[0].type);
-
-        if (['image/png', 'image/jpg', 'image/jpeg'].indexOf(files[0].type) === -1) {
-          console.log('FileUpdate error: The file is not at the good format');
-          return;
-        }
-        reader.readAsArrayBuffer(files[0]);
+      });
+      reader.addEventListener('error', (err) => {
+        // TODO create true error
+        console.error('FileReader error' + err);
       });
 
-      onLoad(imgTexture);
+      if (['image/png', 'image/jpg', 'image/jpeg'].indexOf(files[0].type) === -1) {
+        console.log('FileUpdate error: The file is not at the good format');
+        return;
+      }
+      reader.readAsArrayBuffer(files[0]);
     });
-    return imgTexture;
-  }
-  return null;
-}
+
+    onLoad(imgTexture);
+  });
+  return imgTexture;
+};
 
 /**
  * Create an texture based on a canvas
- * @params {Object}      props    with :
- *  - @params {String}   name
- *  - @params {Number}   width
- *  - @params {Number} height
+ * @params {Object}        props     with :
+ *  - @params {String}       name
+ *  - @params {Number}       width
+ *  - @params {Number}       height
+ *  - @params {Function}     onStart   The drawing canvas function
+ *  - @params {Function}     onUpdate  Method called to update the canvas
  */
-export const createCanvasTexture = ({ name = `canvas-${textureNameArr.length}`, width = 256, height = 256} = {}) => {
-  if (saveTexture(name)) {
-    const canvasTexture = new CanvasTexture(width, height);
-    addInDom(name, canvasTexture.canvas);
-    return canvasTexture;
-  }
-  return null;
-}
+export const createCanvasTexture = ({ name = 'canvasTexture', width = 256, height = 256, onStart = f => f, onUpdate = f => f} = {}) => {
+  const canvasTexture = new CanvasTexture({ width, height, onStart, onUpdate });
+  addInDom(saveTextureName(name), canvasTexture.canvas);
+  return canvasTexture;
+};
