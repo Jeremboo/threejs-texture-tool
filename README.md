@@ -8,7 +8,7 @@ A tool to preview and update your canvases or pictures used for your [three.js](
 
 ## Getting Started (es6)
 
-### Create canvas Texture
+### Create a texture with a dynamic canvas
 
 ![Threejs Texture Tool canvas texture demo](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo.gif?raw=true)
 
@@ -39,70 +39,12 @@ const canvasTexture = createCanvasTexture({
     context.closePath();
   },
 });
-/**
- * createCanvasTexture() return a CanvasTexture object
- *
- * @params {Object} Who  can content :
- * - @params {String} name = `canvas-${i}`
- * - @params {Number} width = 256
- * - @params {Number} height = 256
- */
-const canvasTexture = createCanvasTexture();
 
-/**
- * drawCustomCanvas() code to draw on the canvas.
- * Possibility to add dynamic actions/
- *
- * @params {Object} props = {}
- * @params {Function} construction method
- */
-canvasTexture.drawCustomCanvas({ color: '#FCCE06'}, (context, params) => {
-  const { width, height, color } = params;
-  context.rect(0, 0, width, height);
-  context.fillStyle = color;
-  context.fill();
-});
-
-```
-
-Possibilities :
-
-```javascript
-
-
-/**
- * update() code to update the canvas render built by
- * drawCustomCanvas().
- * Can be called by a loop into a requestAnimationFrame()
- *
- * @params {Object} props = {}
- */
-canvasTexture.update({ color: '#CB512B'});
-
-...
-
-// Create a mesh using canvas on material
-const mesh = THREE.Mesh(
-  new THREE.MeshBasicMaterial(),
-  canvasTexture.material,
-);
-
-// Use canvas into shader material
-const shaderMaterial = new THREE.ShaderMaterial({
-  uniforms: {
-    canvasMap: canvasTexture.uniform,
-  },
-  vertexShader: shaderVert,
-  fragmentShader: shaderFrag,
-  side: THREE.DoubleSide,
-});
-
-// Get only canvas
+// Get only the canvas
 const canvas = canvasTexture.canvas;
-
 ```
 
-### Create texture with a picture
+### Create a texture with a picture
 
 ![Threejs Texture Tool demo with picture](https://github.com/Jeremboo/threejs-texture-tool/blob/master/demo/demo2.gif?raw=true)
 
@@ -117,40 +59,47 @@ const imgTexture = createImageTexture('./test1.jpg', { name: 'test', onLoad: () 
   imgTexture.uniform.value.wrapT =
   REPEAT_WRAPPING;
 } });
+```
+## Get material / uniform and other transformations
+
+For the both textureTools, you can get her material and uniform object compatible with three.js
+
+```javascript
 
 // Use it as material
 const mesh = THREE.Mesh(
   new BoxGeometry(1, 1, 1),
-  imgTexture.material,
+  imageOrCanvasTexture.material,
 );
 
 // Into shaderMaterial
 const shaderMaterial = new ShaderMaterial({
   uniforms: {
-    imgMap: imgTexture.uniform,
+    imgMap: imageOrCanvasTexture.uniform,
   },
   vertexShader: shaderVert,
   fragmentShader: shaderFrag,
   side: DoubleSide,
 });
 
-// Other access
+// Get only the picture
 const img = document.createElement('img');
-img.src = imgTexture.image;
+img.src = imageTexture.image;
+
+// Get only the canvas
+const canvas = canvasTexture.canvas;
 
 ```
 
 ## TODO / NEXT STEP
 
-- remove dragDrop to the dependencies
-
-- customCanvas directly on `createCanvasTexture({ name, width, height }, (context, params) => {})``
+- remplace dragDrop dependencie from scratch
 
 - drag and move all openned textures anywhere in the view
 
-- init each canvas texture with a button
+- reset each canvas texture with a button
 
-- functions to generate specific textures when a canvas is used :
+- functions to generate specific canvas textures :
   - noiseTexture
   - perlinNoiseTexture
   - gradientTexture
