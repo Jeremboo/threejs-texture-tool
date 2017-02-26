@@ -1,7 +1,7 @@
 
-## [ThreejsTextureTool 0.5.0](https://github.com/Jeremboo/threejs-texture-tool)
+## [ThreejsTextureTool 0.5.1](https://github.com/Jeremboo/threejs-texture-tool)
 
-A tool to preview and update your canvases or pictures used for your [three.js](https://threejs.org/) textures
+A tool to preview and update your canvases or pictures used for your [three.js](https://threejs.org/) textures.
 
 [demo 0.2.6](http://codepen.io/Jeremboo/full/qqabKY/)
 
@@ -17,7 +17,7 @@ import { createCanvasTexture } from 'threejs-texture-tool';
 
 // Create a canvasTexture
 const canvasTexture = createCanvasTexture({
-  name: 'drawer',
+  name: 'myCanvas',
   onStart: (props) => {
     // Draw once a rectangle and add a mouse move Listener
     // To update this canvas
@@ -40,8 +40,8 @@ const canvasTexture = createCanvasTexture({
   },
 });
 
-// Get only the canvas
-const canvas = canvasTexture.canvas;
+// Different accesses
+const { texture, material, uniform, canvas } = canvasTexture;
 ```
 
 ### Create a texture with a picture
@@ -53,12 +53,16 @@ import { createImageTexture } from 'threejs-texture-tool';
 
 // Load the picture
 const imgTexture = createImageTexture('./test1.jpg', { name: 'test', onLoad: () => {
+  // Manipulate params
   imgTexture.texture.wrapS =
   imgTexture.texture.wrapT =
   imgTexture.uniform.value.wrapS =
   imgTexture.uniform.value.wrapT =
   REPEAT_WRAPPING;
 } });
+
+// Different accesses
+const { texture, material, uniform, image } = canvasTexture;
 ```
 ## Get material / uniform and other transformations
 

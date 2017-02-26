@@ -1,6 +1,6 @@
 {
   "name": "threejs-texture-tool",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A tool to preview and manipulate your canvases or pictures used for your three.js textures",
   "main": "dist/threejsTextureTool.js",
   "repository": {
